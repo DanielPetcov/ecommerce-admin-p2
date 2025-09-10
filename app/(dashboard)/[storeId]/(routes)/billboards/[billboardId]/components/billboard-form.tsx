@@ -3,7 +3,7 @@
 import z from "zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Store } from "@/lib/generated/prisma";
+import { Billboard } from "@/lib/generated/prisma";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
 import { Trash } from "lucide-react";
@@ -26,29 +26,38 @@ import AlertModal from "@/components/modals/alert-modal";
 import ApiAlert from "@/components/ui/api-alert";
 import { userOrigin } from "@/hooks/use-origin";
 
-interface SettingsFormProps {
-  initialData: Store;
+interface BillboardFormProps {
+  initialData: Billboard | null;
 }
 
 const formSchema = z.object({
-  name: z.string().min(1),
+  label: z.string().min(1),
+  imageUrl: z.string().min(1),
 });
 
-type SettingsFormValues = z.infer<typeof formSchema>;
+type BillboardFormValues = z.infer<typeof formSchema>;
 
-export default function SettingsForm({ initialData }: SettingsFormProps) {
+export default function BillboardForm({ initialData }: BillboardFormProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const params = useParams();
   const router = useRouter();
   const origin = userOrigin();
 
-  const form = useForm<SettingsFormValues>({
+  const title = initialData ? "Edit billboard" : "Create billboard";
+  const description = initialData ? "Edit a billboard" : "Add a new billboard";
+  const toastMessage = initialData ? "Billboard updated" : "Billboard created";
+  const action = initialData ? "Save changes" : "Create";
+
+  const form = useForm<BillboardFormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialData,
+    defaultValues: initialData || {
+      label: "",
+      imageUrl: "",
+    },
   });
 
-  const onSubmit = async (data: SettingsFormValues) => {
+  const onSubmit = async (data: BillboardFormValues) => {
     try {
       await axios.patch(`/api/stores/${params.storeId}`, data);
       router.refresh();
@@ -84,15 +93,17 @@ export default function SettingsForm({ initialData }: SettingsFormProps) {
         loading={loading}
       />
       <div className="flex items-center justify-between">
-        <Heading title="Settings" description="Manage store preferences" />
-        <Button
-          disabled={loading}
-          variant={"destructive"}
-          size={"icon"}
-          onClick={() => setOpen(true)}
-        >
-          <Trash className="h-4  w-4" />
-        </Button>
+        <Heading title={title} description={description} />
+        {initialData && (
+          <Button
+            disabled={loading}
+            variant={"destructive"}
+            size={"icon"}
+            onClick={() => setOpen(true)}
+          >
+            <Trash className="h-4  w-4" />
+          </Button>
+        )}
       </div>
       <Separator />
 
@@ -104,14 +115,14 @@ export default function SettingsForm({ initialData }: SettingsFormProps) {
           <div className="grid grid-cols-3 gap-8">
             <FormField
               control={form.control}
-              name="name"
+              name="label"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>Label</FormLabel>
                   <FormControl>
                     <Input
                       disabled={loading}
-                      placeholder="Store name"
+                      placeholder="Billboard label"
                       {...field}
                     />
                   </FormControl>
@@ -121,16 +132,11 @@ export default function SettingsForm({ initialData }: SettingsFormProps) {
             />
           </div>
           <Button disabled={loading} className="ml-auto" type="submit">
-            Save changes
+            {action}
           </Button>
         </form>
       </Form>
       <Separator />
-      <ApiAlert
-        title="NEXT_PUBLIC_API_URL"
-        description={`${origin}/api/${params.storeId}`}
-        variant="public"
-      />
     </>
   );
 }
