@@ -19,19 +19,19 @@ export default async function ProductPage({
 
   const categories = await prismadb.category.findMany({
     where: {
-      storeId: params.storeId,
+      storeId: param.storeId,
     },
   });
 
   const sizes = await prismadb.size.findMany({
     where: {
-      storeId: params.storeId,
+      storeId: param.storeId,
     },
   });
 
   const colors = await prismadb.color.findMany({
     where: {
-      storeId: params.storeId,
+      storeId: param.storeId,
     },
   });
 
@@ -39,7 +39,11 @@ export default async function ProductPage({
     <div className="flex flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">
         <ProductForm
-          initialData={product}
+          initialData={
+            product
+              ? { ...product, price: parseFloat(String(product?.price)) }
+              : null
+          }
           categories={categories}
           colors={colors}
           sizes={sizes}

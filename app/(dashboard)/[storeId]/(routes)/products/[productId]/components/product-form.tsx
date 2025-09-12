@@ -2,7 +2,7 @@
 
 import z from "zod";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import { Category, Color, Image, Product, Size } from "@/lib/generated/prisma";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
@@ -14,7 +14,6 @@ import Heading from "@/components/heading";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import {
-  Form,
   FormControl,
   FormDescription,
   FormField,
@@ -24,7 +23,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import AlertModal from "@/components/modals/alert-modal";
-import { ImageUpload } from "@/components/ui/image-upload";
 import {
   Select,
   SelectTrigger,
@@ -33,11 +31,13 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import ProductImageForm from "./product-image-form";
 
 interface ProductFormProps {
   initialData:
-    | (Product & {
+    | (Omit<Product, "price"> & {
         images: Image[];
+        price: number;
       })
     | null;
   categories: Category[];
@@ -48,7 +48,7 @@ interface ProductFormProps {
 const formSchema = z.object({
   name: z.string().min(1),
   images: z.object({ url: z.string() }).array(),
-  price: z.number().min(1),
+  price: z.number(),
   categoryId: z.string().min(1),
   colorId: z.string().min(1),
   sizeId: z.string().min(1),
@@ -69,9 +69,9 @@ export default function ProductForm({
   const params = useParams();
   const router = useRouter();
 
-  const title = initialData ? "Edit billboard" : "Create billboard";
-  const description = initialData ? "Edit a billboard" : "Add a new billboard";
-  const toastMessage = initialData ? "Billboard updated" : "Billboard created";
+  const title = initialData ? "Edit product" : "Create product";
+  const description = initialData ? "Edit a product" : "Add a new product";
+  const toastMessage = initialData ? "Product updated" : "Product created";
   const action = initialData ? "Save changes" : "Create";
 
   const form = useForm<ProductFormValues>({
@@ -152,35 +152,12 @@ export default function ProductForm({
       </div>
       <Separator />
 
-      <Form {...form}>
+      <FormProvider {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-8 w-full"
         >
-          <FormField
-            control={form.control}
-            name="images"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Images</FormLabel>
-                <FormControl>
-                  <ImageUpload
-                    values={field.value.map((image) => image.url)}
-                    disabled={loading}
-                    onChange={(url) =>
-                      field.onChange([...field.value, { url }])
-                    }
-                    onRemove={(url) =>
-                      field.onChange([
-                        ...field.value.filter((image) => image.url !== url),
-                      ])
-                    }
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <ProductImageForm form={form} loading={loading} />
           <div className="grid grid-cols-3 gap-8">
             <FormField
               control={form.control}
@@ -209,8 +186,8 @@ export default function ProductForm({
                     <Input
                       type="number"
                       disabled={loading}
-                      placeholder="9.99"
                       {...field}
+                      onChange={(e) => field.onChange(Number(e.target.value))}
                     />
                   </FormControl>
                   <FormMessage />
@@ -364,7 +341,7 @@ export default function ProductForm({
             {action}
           </Button>
         </form>
-      </Form>
+      </FormProvider>
     </>
   );
 }
