@@ -100,7 +100,7 @@ export async function DELETE(
 
 export async function GET(
   req: Request,
-  { params }: { params: { billboardId: string } }
+  { params }: { params: { storeId: string; billboardId: string } }
 ) {
   try {
     const param = await params;
