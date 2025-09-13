@@ -38,7 +38,7 @@ export default function CellAction({ data }: CellActionProps) {
       await axios.delete(`/api/${params.storeId}/billboards/${data.id}`);
       router.refresh();
       toast.success("Billboard deleted.");
-    } catch (error) {
+    } catch {
       toast.error(
         "Make sure you removed all categories using this billboard first."
       );

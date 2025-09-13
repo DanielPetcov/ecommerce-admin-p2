@@ -7,20 +7,7 @@ import {
 } from "@/components/ui/form";
 import { ImageUpload } from "@/components/ui/image-upload";
 import { useFormContext, UseFormReturn } from "react-hook-form";
-import z from "zod";
-
-const formSchema = z.object({
-  name: z.string().min(1),
-  images: z.object({ url: z.string() }).array(),
-  price: z.number(),
-  categoryId: z.string().min(1),
-  colorId: z.string().min(1),
-  sizeId: z.string().min(1),
-  isFeatured: z.boolean().default(false).optional(),
-  isArchived: z.boolean().default(false).optional(),
-});
-
-type ProductFormValues = z.infer<typeof formSchema>;
+import { ProductFormValues } from "./product-image-type";
 
 export default function ProductImageForm({
   form,

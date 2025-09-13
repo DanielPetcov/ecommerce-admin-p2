@@ -54,7 +54,7 @@ export default function SettingsForm({ initialData }: SettingsFormProps) {
       await axios.patch(`/api/stores/${params.storeId}`, data);
       router.refresh();
       toast.success("Store updated.");
-    } catch (error) {
+    } catch {
       toast.error("Something went wrong");
     } finally {
       setLoading(false);
@@ -68,7 +68,7 @@ export default function SettingsForm({ initialData }: SettingsFormProps) {
       router.refresh();
       router.push("/");
       toast.success("Store deleted.");
-    } catch (error) {
+    } catch {
       toast.error("Make sure you removed all products and categories first.");
     } finally {
       setLoading(false);

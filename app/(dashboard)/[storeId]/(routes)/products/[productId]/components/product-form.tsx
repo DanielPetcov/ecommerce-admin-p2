@@ -2,7 +2,7 @@
 
 import z from "zod";
 import { useState } from "react";
-import { FormProvider, useForm, useFormContext } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { Category, Color, Image, Product, Size } from "@/lib/generated/prisma";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
@@ -107,7 +107,7 @@ export default function ProductForm({
       router.refresh();
       router.push(`/${params.storeId}/products`);
       toast.success(toastMessage);
-    } catch (error) {
+    } catch {
       toast.error("Something went wrong");
     } finally {
       setLoading(false);
@@ -121,7 +121,7 @@ export default function ProductForm({
       router.refresh();
       router.push(`/${params.storeId}/products`);
       toast.success("Product deleted.");
-    } catch (error) {
+    } catch {
       toast.error("Something went wrong");
     } finally {
       setLoading(false);

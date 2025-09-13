@@ -70,7 +70,7 @@ export default function ColorForm({ initialData }: ColorFormProps) {
       router.refresh();
       router.push(`/${params.storeId}/colors`);
       toast.success(toastMessage);
-    } catch (error) {
+    } catch {
       toast.error("Something went wrong");
     } finally {
       setLoading(false);
@@ -84,7 +84,7 @@ export default function ColorForm({ initialData }: ColorFormProps) {
       router.refresh();
       router.push(`/${params.storeId}/colors`);
       toast.success("Color deleted.");
-    } catch (error) {
+    } catch {
       toast.error("Make sure you removed all products using this color first.");
     } finally {
       setLoading(false);

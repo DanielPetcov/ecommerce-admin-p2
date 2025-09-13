@@ -23,7 +23,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import AlertModal from "@/components/modals/alert-modal";
-import { ImageUpload } from "@/components/ui/image-upload";
 
 interface SizeFormProps {
   initialData: Size | null;
@@ -69,7 +68,7 @@ export default function SizeForm({ initialData }: SizeFormProps) {
       router.refresh();
       router.push(`/${params.storeId}/sizes`);
       toast.success(toastMessage);
-    } catch (error) {
+    } catch {
       toast.error("Something went wrong");
     } finally {
       setLoading(false);
@@ -83,7 +82,7 @@ export default function SizeForm({ initialData }: SizeFormProps) {
       router.refresh();
       router.push(`/${params.storeId}/sizes`);
       toast.success("Size deleted.");
-    } catch (error) {
+    } catch {
       toast.error("Make sure you removed all products using this size first.");
     } finally {
       setLoading(false);

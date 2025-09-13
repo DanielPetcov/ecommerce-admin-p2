@@ -1,9 +1,10 @@
 "use client";
 
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import type { GraphData } from "@/actions/get-graph-revenue";
 
 interface OverviewProps {
-  data: any[];
+  data: GraphData[];
 }
 
 export default function Overview({ data }: OverviewProps) {
