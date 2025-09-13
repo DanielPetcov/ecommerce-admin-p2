@@ -1,6 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
+import DeleteOrderButton from "./deleteButton";
 
 export type OrderColumn = {
   id: string;
@@ -32,5 +33,9 @@ export const columns: ColumnDef<OrderColumn>[] = [
   {
     accessorKey: "isPaid",
     header: "Paid",
+  },
+  {
+    id: "deleteAction",
+    cell: ({ row }) => <DeleteOrderButton orderId={row.original.id} />,
   },
 ];
