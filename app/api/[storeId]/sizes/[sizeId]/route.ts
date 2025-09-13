@@ -103,13 +103,7 @@ export async function GET(
   { params }: { params: { sizeId: string } }
 ) {
   try {
-    const { userId } = await auth();
-
     const param = await params;
-
-    if (!userId) {
-      return new NextResponse("Unauthenticated", { status: 401 });
-    }
 
     if (!param.sizeId) {
       return new NextResponse("Size id is required", { status: 400 });

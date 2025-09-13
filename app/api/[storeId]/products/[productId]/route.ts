@@ -149,13 +149,7 @@ export async function GET(
   { params }: { params: { productId: string } }
 ) {
   try {
-    const { userId } = await auth();
-
     const param = await params;
-
-    if (!userId) {
-      return new NextResponse("Unauthenticated", { status: 401 });
-    }
 
     if (!param.productId) {
       return new NextResponse("Product id is required", { status: 400 });
